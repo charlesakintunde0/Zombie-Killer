@@ -26,6 +26,7 @@ namespace Zombies
         public Form1()
         {
             InitializeComponent();
+            RestartGame();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -56,6 +57,8 @@ namespace Zombies
             }
             else {
                 gameOver = true;
+                player.Image = Properties.Resources.dead;
+                GameTimer.Stop();
 
             }
 
@@ -81,6 +84,67 @@ namespace Zombies
             if (moveDown == true && player.Top + player.Height < this.ClientSize.Height)
             {
                 player.Top += speed;
+            }
+
+
+
+            foreach (Control x in this.Controls)
+            {
+                if (x is PictureBox && (string)x.Tag == "ammo")
+                {
+                    if (player.Bounds.IntersectsWith(x.Bounds))
+                    {
+                        this.Controls.Remove(x);
+                        ((PictureBox)x).Dispose();
+
+                        ammo += 5;
+                    }
+                }
+
+                if (x is PictureBox && (string)x.Tag == "zombie")
+                {
+                    if (x.Left > player.Left)
+                    {
+                        x.Left -= zombieSpeed;
+                        ((PictureBox)x).Image = Properties.Resources.zleft;
+                    }
+                    if (x.Left < player.Left)
+                    {
+                        x.Left += zombieSpeed;
+                        ((PictureBox)x).Image = Properties.Resources.zright;
+                    }
+                    if (x.Top > player.Top)
+                    {
+                        x.Top -= zombieSpeed;
+                        ((PictureBox)x).Image = Properties.Resources.zup;
+                    }
+
+                    if (x.Top < player.Top)
+                    {
+                        x.Top += zombieSpeed;
+                        ((PictureBox)x).Image = Properties.Resources.zdown;
+                    }
+
+                }
+
+                foreach (Control j in this.Controls)
+                {
+                    if (j is PictureBox && (string)j.Tag == "bullet" && x is PictureBox && (string)x.Tag == "zombie") 
+                    {
+                        if (x.Bounds.IntersectsWith(j.Bounds))
+                        {
+                            score++;
+
+                            this.Controls.Remove(j);
+                            ((PictureBox)j).Dispose();
+                            this.Controls.Remove(x);
+                            ((PictureBox)x).Dispose();
+                            zombiesList.Remove(((PictureBox)x));
+                            makeZombies();
+                        }
+                    }
+                }
+
             }
 
 
@@ -191,7 +255,7 @@ namespace Zombies
             ammo.Image = Properties.Resources.ammo_Image;
             ammo.SizeMode = PictureBoxSizeMode.AutoSize;
             ammo.Left = randNum.Next(10, this.ClientSize.Width - ammo.Width);
-            ammo.Top = randNum.Next(10, this.ClientSize.Height - ammo.Height);
+            ammo.Top = randNum.Next(60, this.ClientSize.Height - ammo.Height);
             ammo.Tag = "ammo";
             this.Controls.Add(ammo);
 
@@ -201,6 +265,32 @@ namespace Zombies
 
         private void RestartGame() 
         {
+            player.Image = Properties.Resources.up;
+
+            foreach (PictureBox i in zombiesList)
+            {
+                this.Controls.Remove(i);
+
+            }
+
+            zombiesList.Clear();
+
+            for (int i = 0; i < 3; i++)
+            {
+                makeZombies();
+            }
+
+            moveUp = false;
+            moveDown = false;
+            moveLeft = false;
+            moveRight = false;
+
+            playerHealth = 100;
+            score = 0;
+            ammo = 10;
+
+            GameTimer.Start();
+
 
         }
     }
