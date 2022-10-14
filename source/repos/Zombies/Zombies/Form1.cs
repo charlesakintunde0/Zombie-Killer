@@ -157,10 +157,14 @@ namespace Zombies
         }
 
         private void ShootBullet(string direction) 
-        { 
-
+        {
+            Bullet shootBullet = new Bullet();
+            shootBullet.direction = direction;
+            shootBullet.bulletLeft = player.Left + (player.Width / 2);
+            shootBullet.bulletTop = player.Top + (player.Height / 2);
+            shootBullet.MakeBullet(this);
         }
-
+          
         private void makeZombies() 
         {
 
