@@ -150,9 +150,15 @@ namespace Zombies
 
             }
 
-            if (e.KeyCode == Keys.Space) 
+            if (e.KeyCode == Keys.Space && ammo > 0) 
             {
+                ammo--;
                 ShootBullet(direction);
+
+                if (ammo < 1) 
+                {
+                    DropAmmo();
+                }
             }
         }
 
@@ -167,7 +173,30 @@ namespace Zombies
           
         private void makeZombies() 
         {
+            PictureBox zombie = new PictureBox();
+            zombie.Tag = "zombie";
+            zombie.Image = Properties.Resources.zdown;
+            zombie.Left = randNum.Next(0, 900);
+            zombie.Top = randNum.Next(0, 800);
+            zombie.SizeMode = PictureBoxSizeMode.AutoSize;
+            zombiesList.Add(zombie);
+            this.Controls.Add(zombie);
+            player.BringToFront();
 
+        }
+
+        private void DropAmmo()
+        {
+            PictureBox ammo = new PictureBox();
+            ammo.Image = Properties.Resources.ammo_Image;
+            ammo.SizeMode = PictureBoxSizeMode.AutoSize;
+            ammo.Left = randNum.Next(10, this.ClientSize.Width - ammo.Width);
+            ammo.Top = randNum.Next(10, this.ClientSize.Height - ammo.Height);
+            ammo.Tag = "ammo";
+            this.Controls.Add(ammo);
+
+            ammo.BringToFront();
+            player.BringToFront();
         }
 
         private void RestartGame() 
