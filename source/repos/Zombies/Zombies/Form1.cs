@@ -103,6 +103,11 @@ namespace Zombies
 
                 if (x is PictureBox && (string)x.Tag == "zombie")
                 {
+                    if (player.Bounds.IntersectsWith(x.Bounds)) 
+                    {
+                        playerHealth -= 1;
+                    }
+
                     if (x.Left > player.Left)
                     {
                         x.Left -= zombieSpeed;
@@ -152,6 +157,11 @@ namespace Zombies
 
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
+            if (gameOver == true)
+            {
+                return;
+            
+            }
 
             if (e.KeyCode == Keys.Left)
             {
@@ -214,7 +224,7 @@ namespace Zombies
 
             }
 
-            if (e.KeyCode == Keys.Space && ammo > 0) 
+            if (e.KeyCode == Keys.Space && ammo > 0 && gameOver == false) 
             {
                 ammo--;
                 ShootBullet(direction);
@@ -223,6 +233,11 @@ namespace Zombies
                 {
                     DropAmmo();
                 }
+            }
+
+            if (e.KeyCode == Keys.Enter && gameOver == true)
+            {
+                RestartGame();
             }
         }
 
@@ -284,6 +299,7 @@ namespace Zombies
             moveDown = false;
             moveLeft = false;
             moveRight = false;
+            gameOver = false;
 
             playerHealth = 100;
             score = 0;
